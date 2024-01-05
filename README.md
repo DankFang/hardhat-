@@ -36,6 +36,7 @@
 
    脚本：const owner = await myNFT.owner();
    ```
+   ```
    如果不是view修饰，则不能直接定义一个变量接收返回值。
    函数： function mintNFT(address recipient, string memory tokenURI)
         public returns (uint256)
@@ -50,7 +51,7 @@
       这样的函数则按上述方法调用会报错，网上解释：You can not directly receive a return value coming from a function that you are sending a transaction to off-chain. You can only do so on-chain - i.e. when one SC function invokes another SC function.
 
       解决办法：再写个合约，自定义变量来接收该函数返回值，即在本合约里导如函数所在合约，创建实例并且调用函数
-... (continues with more items)
+   ```
 
 6. 如果函数名相同，但参数不同，调用时，需声明完整的函数签名。例子如下：
    ```
@@ -80,53 +81,53 @@
             }
          },
             log: true,
-});
+        });
       const contract = await ethers.getContract('合约名字')
    ```
    ```
-   部署到区块链上
-   const { deployProxy } = require('@openzeppelin/hardhat-upgrades');
+    部署到区块链上
+    const { deployProxy } = require('@openzeppelin/hardhat-upgrades');
 
-   async function main() {
-       const Contract = await ethers.getContractFactory("MyContract");
-       const instance = await deployProxy(Contract, [arg1, arg2], { initializer: 'initialize' });
-       console.log("Deployed to:", instance.address);
-   }
+    async function main() {
+        const Contract = await ethers.getContractFactory("MyContract");
+        const instance = await deployProxy(Contract, [arg1, arg2], { initializer: 'initialize' });
+        console.log("Deployed to:", instance.address);
+    }
    ```
 8. 处理测试超时问题：
    默认的测试超时时间是20000ms。如果需要更长时间，可以在 it 函数中设置 this.timeout()。
    例如，设置超时为60000ms：
    ```
-   it("test case", async function() {
-       this.timeout(60000);
-       // test code
-   });
+    it("test case", async function() {
+        this.timeout(60000);
+        // test code
+    });
 
-   it("", async function () {
+    it("", async function () {
 
-   }).timeout(1000000)
+    }).timeout(1000000)
 
-   在hardhat-config.js文件里加上限定
-   mocha: {
-   timeout: 10000000
-   },
+    在hardhat-config.js文件里加上限定
+    mocha: {
+    timeout: 10000000
+    },
    ```
 9. hardhat测试时：打包交易的calldata：
    ```
-   以下是打包erc20转账的演示
-   //先把打包函数搞出来
-   const abiCoder = new ethers.AbiCoder();
-   // 将function转换为buffer
-   const functionBytes = toUtf8Bytes('transfer(address,uint256)');
-   // 打包参数
-   const data = abiCoder.encode(['address', 'uint256'], [user4.address, ethers.parseEther("10")]);
-   // 获取函数选择器 
-   const functionSelector = dataSlice(keccak256(functionBytes), 0, 4);
-   // 拼接calldata
-   const finalData = functionSelector + data.substring(2);
+    以下是打包erc20转账的演示
+    //先把打包函数搞出来
+    const abiCoder = new ethers.AbiCoder();
+    // 将function转换为buffer
+    const functionBytes = toUtf8Bytes('transfer(address,uint256)');
+    // 打包参数
+    const data = abiCoder.encode(['address', 'uint256'], [user4.address, ethers.parseEther("10")]);
+    // 获取函数选择器 
+    const functionSelector = dataSlice(keccak256(functionBytes), 0, 4);
+    // 拼接calldata
+    const finalData = functionSelector + data.substring(2);
 
 
-   最终传入finaldata即可调通
+    最终传入finaldata即可调通
    ```
 
 10. Git指令：指定克隆某分支git clone --branch <branchname> <remote-repo-url>或者git clone -b <branchname> <remote-repo-url>
